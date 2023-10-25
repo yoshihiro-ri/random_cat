@@ -1,17 +1,28 @@
 import { NextPage } from "next";
-import { useEffect,useState} from "react"
+import { useEffect, useState } from "react"
+
 const IndexPage: NextPage = () => {
     const [imageUrl, setImageUrl] = useState("")
-    const [loading,setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchImage().then((newImage) => {
             setImageUrl(newImage.url);
             setLoading(false);
         });
-    },[]);
-
-    return <div>{loading || <img src={imageUrl}/>}</div>;
+    }, []);
+    const handleClick = async () => {
+        setLoading(true);
+        const newImage = await fetchImage();
+        setImageUrl(newImage.url);
+        setLoading(false);
+    }
+    return (
+        <div className="cat_img">
+            {loading || <img src={imageUrl} />}
+            <button onClick={handleClick}>もっと見る</button>
+        </div>
+    );
 };
 
 export default IndexPage;
@@ -23,3 +34,9 @@ const fetchImage = async (): Promise<Image> => {
     const images = await res.json();
     return images[0];
 };
+
+function ViewMoreButton() {
+    return (
+        <button>もっと見る</button>
+    )
+}
